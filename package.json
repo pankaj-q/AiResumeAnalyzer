@@ -1,0 +1,28 @@
+{
+  "name": "ai-resume-analyzer",
+  "version": "2.0.0",
+  "description": "Production-ready AI Resume Analyzer with ATS Scoring",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "docker:start": "docker compose up --build",
+    "docker:stop": "docker compose down"
+  },
+  "dependencies": {
+    "compression": "^1.7.5",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.0.0",
+    "ioredis": "^5.5.0",
+    "mammoth": "^1.9.0",
+    "multer": "^1.4.5-lts.2",
+    "openai": "^4.86.2",
+    "pdf-parse": "^1.1.1",
+    "rate-limit-redis": "^4.2.0",
+    "winston": "^3.17.0"
+  }
+}
