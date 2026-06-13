@@ -21,7 +21,8 @@ app.use(helmet({ crossOriginEmbedderPolicy: false, contentSecurityPolicy: false 
 app.use(compression());
 app.use(cors({ origin: process.env.CORS_ORIGIN || '*', methods: ['GET', 'POST'] }));
 app.use(express.json({ limit: '1mb' }));
-app.use(express.static('public', { maxAge: isProd ? '7d' : 0 }));
+const staticDir = isProd ? 'client/dist' : 'public';
+app.use(express.static(staticDir, { maxAge: isProd ? '7d' : 0 }));
 
 // ── Rate limiters ──────────────────────────────────────────────
 const redisClient = getRedisClient();
