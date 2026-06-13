@@ -538,3 +538,43 @@ textarea::placeholder {
   animation: fadeUp 0.3s ease;
   max-width: 90vw;
 }
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 40px 20px 32px;
+  position: relative;
+  z-index: 1;
+}
+
+.footer-line {
+  width: 60px;
+  height: 2px;
+  margin: 0 auto 16px;
+  background: linear-gradient(90deg, var(--accent1), var(--accent2));
+  border-radius: 1px;
+  opacity: 0.4;
+}
+
+.footer-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.footer-text {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 400;
+  letter-spacing: 0.3px;
+}
+
+.footer-name {
+  font-size: 13px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--accent1), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 1px;
+}
