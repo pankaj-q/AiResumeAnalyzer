@@ -559,7 +559,7 @@ footer {
 
 .footer-grid {
   display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  grid-template-columns: repeat(4, 1fr);
   gap: 32px;
   text-align: left;
 }
@@ -599,14 +599,19 @@ footer {
   list-style: none;
 }
 
-.footer-contact li,
-.footer-links li {
+.footer-contact li {
   font-size: 13px;
   color: var(--text-muted);
   padding: 4px 0;
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.footer-links li {
+  font-size: 13px;
+  color: var(--text-muted);
+  padding: 4px 0 4px 22px;
 }
 
 .footer-contact a,
