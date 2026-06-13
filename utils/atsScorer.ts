@@ -2,12 +2,13 @@ import crypto from 'crypto';
 import { openai, safeAICompletion } from './openai.js';
 import { cacheGet, cacheSet } from './redis.js';
 import logger from './logger.js';
+import type { ResumeParsed, ATSResult } from './types.js';
 
-export async function calculateATSScore(resume, jobDescription) {
+export async function calculateATSScore(resume: ResumeParsed, jobDescription: string): Promise<ATSResult> {
   const hashInput = JSON.stringify({ text: resume.rawText?.slice(0, 2000), jd: jobDescription.slice(0, 2000) });
   const cacheKey = `ats:${crypto.createHash('md5').update(hashInput).digest('hex')}`;
 
-  const cached = await cacheGet(cacheKey);
+  const cached = await cacheGet<ATSResult>(cacheKey);
   if (cached) {
     logger.info('ATS cache hit');
     return cached;
@@ -42,7 +43,7 @@ export async function calculateATSScore(resume, jobDescription) {
     temperature: 0.1,
   });
 
-  const result = JSON.parse(completion.choices[0].message.content);
+  const result = JSON.parse(completion.choices[0].message.content!) as ATSResult;
   await cacheSet(cacheKey, result, 86400);
   return result;
 }

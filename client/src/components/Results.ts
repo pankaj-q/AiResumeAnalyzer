@@ -1,10 +1,24 @@
-function esc(str) {
+interface ATSData {
+  atsScore: number;
+  keywordMatch: { score: number; matched: string[]; missing: string[] };
+  formatScore: number;
+  experienceScore: number;
+  educationScore: number;
+  skillsScore: number;
+  strengths: string[];
+  improvements: string[];
+  suggestions: string[];
+  summary: string;
+  sections: Record<string, boolean>;
+}
+
+function esc(str: string): string {
   const d = document.createElement('div');
   d.textContent = str;
   return d.innerHTML;
 }
 
-export function Results() {
+export function Results(): string {
   return `
     <div id="results" style="display:none">
       <div class="score-section glass">
@@ -73,8 +87,8 @@ export function Results() {
   `;
 }
 
-export function displayResults(data) {
-  const results = document.getElementById('results');
+export function displayResults(data: ATSData): void {
+  const results = document.getElementById('results')!;
   results.style.display = 'block';
   results.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
@@ -85,7 +99,7 @@ export function displayResults(data) {
   animateMetric('educationScore', 'educationFill', data.educationScore);
   animateMetric('formatScore', 'formatFill', data.formatScore);
 
-  document.getElementById('summaryText').textContent = data.summary;
+  document.getElementById('summaryText')!.textContent = data.summary;
 
   renderTags('matchedKeywords', data.keywordMatch.matched, 'match');
   renderTags('missingKeywords', data.keywordMatch.missing, 'miss');
@@ -96,45 +110,45 @@ export function displayResults(data) {
 
   renderSections(data.sections);
 
-  const circle = document.getElementById('scoreCircle');
+  const circle = document.getElementById('scoreCircle')!;
   const offset = 427.26 * (1 - data.atsScore / 100);
-  setTimeout(() => { circle.style.strokeDashoffset = offset; }, 100);
+  setTimeout(() => { circle.style.strokeDashoffset = String(offset); }, 100);
 }
 
-function animateScore(id, final) {
-  const el = document.getElementById(id);
-  el.textContent = 0;
+function animateScore(id: string, final: number): void {
+  const el = document.getElementById(id)!;
+  el.textContent = '0';
   let cur = 0;
   const step = Math.max(1, Math.floor(final / 30));
   const iv = setInterval(() => {
     cur += step;
     if (cur >= final) { cur = final; clearInterval(iv); }
-    el.textContent = cur;
+    el.textContent = String(cur);
   }, 20);
 }
 
-function animateMetric(valueId, fillId, final) {
-  document.getElementById(valueId).textContent = final + '%';
-  setTimeout(() => { document.getElementById(fillId).style.width = final + '%'; }, 200);
+function animateMetric(valueId: string, fillId: string, final: number): void {
+  document.getElementById(valueId)!.textContent = final + '%';
+  setTimeout(() => { document.getElementById(fillId)!.style.width = final + '%'; }, 200);
 }
 
-function renderTags(id, items, cls) {
-  const c = document.getElementById(id);
+function renderTags(id: string, items: string[], cls: string): void {
+  const c = document.getElementById(id)!;
   c.innerHTML = items.length
     ? items.map(k => `<span class="${cls}">${esc(k)}</span>`).join('')
     : '<span style="color:var(--text-muted);font-size:13px">None found</span>';
 }
 
-function renderList(id, items) {
-  const c = document.getElementById(id);
+function renderList(id: string, items: string[]): void {
+  const c = document.getElementById(id)!;
   c.innerHTML = items.length
     ? items.map(i => `<li>${esc(i)}</li>`).join('')
     : '<li style="color:var(--text-muted)">No data</li>';
 }
 
-function renderSections(sections) {
-  const grid = document.getElementById('sectionsGrid');
-  const labels = {
+function renderSections(sections: Record<string, boolean>): void {
+  const grid = document.getElementById('sectionsGrid')!;
+  const labels: Record<string, string> = {
     contact: 'Contact Info', summary: 'Professional Summary',
     experience: 'Work Experience', education: 'Education',
     skills: 'Skills', certifications: 'Certifications',

@@ -2,12 +2,13 @@
   "name": "ai-resume-analyzer",
   "version": "2.0.0",
   "description": "Production-ready AI Resume Analyzer with ATS Scoring",
-  "main": "server.js",
+  "main": "dist/server.js",
   "type": "module",
   "scripts": {
-    "start": "npm run build:client && node server.js",
-    "dev": "node --watch server.js",
+    "start": "npm run build:backend && npm run build:client && node dist/server.js",
+    "dev": "tsx watch server.ts",
     "dev:client": "npm --prefix client run dev",
+    "build:backend": "tsc",
     "build:client": "npm --prefix client run build",
     "docker:start": "docker compose up --build",
     "docker:stop": "docker compose down"
@@ -26,5 +27,14 @@
     "pdf-parse": "^1.1.1",
     "rate-limit-redis": "^4.2.0",
     "winston": "^3.17.0"
+  },
+  "devDependencies": {
+    "@types/compression": "^1.8.1",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/multer": "^2.1.0",
+    "@types/node": "^25.9.3",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3"
   }
 }

@@ -1,4 +1,4 @@
-export function Header() {
+export function Header(): string {
   return `
     <header>
       <div class="logo">

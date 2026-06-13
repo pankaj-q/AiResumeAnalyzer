@@ -1,14 +1,19 @@
 import { API } from '../utils/config.js';
 
-let state = { file: null, loading: false };
+interface FormState {
+  file: File | null;
+  loading: boolean;
+}
 
-function esc(str) {
+const state: FormState = { file: null, loading: false };
+
+function esc(str: string): string {
   const d = document.createElement('div');
   d.textContent = str;
   return d.innerHTML;
 }
 
-export function AnalyzerForm() {
+export function AnalyzerForm(): string {
   return `
     <div class="input-section glass">
       <div class="section-header">
@@ -48,21 +53,23 @@ export function AnalyzerForm() {
   `;
 }
 
-export function mountAnalyzerForm(container, onResult) {
-  const fileInput = container.querySelector('#resumeInput');
-  const uploadZone = container.querySelector('#uploadZone');
-  const uploadContent = container.querySelector('#uploadContent');
-  const uploadPreview = container.querySelector('#uploadPreview');
-  const fileName = container.querySelector('#fileName');
-  const removeBtn = container.querySelector('#removeFile');
-  const form = container.querySelector('#analyzeForm');
-  const analyzeBtn = container.querySelector('#analyzeBtn');
-  const btnText = analyzeBtn.querySelector('.btn-text');
-  const btnLoader = analyzeBtn.querySelector('.btn-loader');
+type ResultCallback = (data: unknown) => void;
 
-  function setFile(file) {
-    const ext = file.name.split('.').pop().toLowerCase();
-    if (!['pdf', 'docx'].includes(ext)) return showError('Please upload a PDF or DOCX file');
+export function mountAnalyzerForm(container: HTMLElement, onResult: ResultCallback): void {
+  const fileInput = container.querySelector<HTMLInputElement>('#resumeInput')!;
+  const uploadZone = container.querySelector<HTMLElement>('#uploadZone')!;
+  const uploadContent = container.querySelector<HTMLElement>('#uploadContent')!;
+  const uploadPreview = container.querySelector<HTMLElement>('#uploadPreview')!;
+  const fileName = container.querySelector<HTMLElement>('#fileName')!;
+  const removeBtn = container.querySelector<HTMLButtonElement>('#removeFile')!;
+  const form = container.querySelector<HTMLFormElement>('#analyzeForm')!;
+  const analyzeBtn = container.querySelector<HTMLButtonElement>('#analyzeBtn')!;
+  const btnText = analyzeBtn.querySelector<HTMLElement>('.btn-text')!;
+  const btnLoader = analyzeBtn.querySelector<HTMLElement>('.btn-loader')!;
+
+  function setFile(file: File): void {
+    const ext = file.name.split('.').pop()?.toLowerCase();
+    if (!ext || !['pdf', 'docx'].includes(ext)) return showError('Please upload a PDF or DOCX file');
     if (file.size > 5 * 1024 * 1024) return showError('File must be under 5MB');
     state.file = file;
     fileName.textContent = file.name;
@@ -82,7 +89,7 @@ export function mountAnalyzerForm(container, onResult) {
   });
 
   fileInput.addEventListener('change', () => {
-    if (fileInput.files[0]) setFile(fileInput.files[0]);
+    if (fileInput.files?.[0]) setFile(fileInput.files[0]);
   });
 
   removeBtn.addEventListener('click', (e) => {
@@ -97,7 +104,7 @@ export function mountAnalyzerForm(container, onResult) {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const file = state.file;
-    const jobDescription = document.getElementById('jobDescription').value.trim();
+    const jobDescription = (document.getElementById('jobDescription') as HTMLTextAreaElement).value.trim();
 
     if (!file) return showError('Please upload a resume');
     if (!jobDescription) return showError('Please provide a job description');
@@ -121,7 +128,7 @@ export function mountAnalyzerForm(container, onResult) {
 
       onResult(data);
     } catch (err) {
-      showError(err.message);
+      showError((err as Error).message);
     } finally {
       state.loading = false;
       analyzeBtn.disabled = false;
@@ -131,7 +138,7 @@ export function mountAnalyzerForm(container, onResult) {
   });
 }
 
-function showError(msg) {
+function showError(msg: string): void {
   const existing = document.querySelector('.error-toast');
   if (existing) existing.remove();
   const toast = document.createElement('div');

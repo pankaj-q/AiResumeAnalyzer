@@ -1,4 +1,19 @@
-export const FOOTER = {
+export interface LinkItem {
+  label: string;
+  href: string;
+}
+
+export interface FooterConfig {
+  brand: { name: string; tagline: string };
+  contact: { email: string; phone: string; address: string };
+  services: LinkItem[];
+  company: LinkItem[];
+  copyright: string;
+  credit: string;
+  creditName: string;
+}
+
+export const FOOTER: FooterConfig = {
   brand: {
     name: 'ResumeAI',
     tagline: 'AI-powered ATS resume analysis to help you land your dream job.',
@@ -21,4 +36,4 @@ export const FOOTER = {
 export const API = {
   analyze: '/api/analyze',
   health: '/api/health',
-};
+} as const;
