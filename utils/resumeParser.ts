@@ -1,4 +1,3 @@
-import fs from 'fs';
 import crypto from 'crypto';
 import pdf from 'pdf-parse';
 import mammoth from 'mammoth';
@@ -7,19 +6,10 @@ import { cacheGet, cacheSet } from './redis.js';
 import logger from './logger.js';
 import type { ResumeParsed } from './types.js';
 
-async function extractText(filePath: string, fileName: string): Promise<string> {
-  const buffer = fs.readFileSync(filePath);
-  if (fileName.toLowerCase().endsWith('.pdf')) {
-    const data = await pdf(buffer);
-    return data.text;
-  }
-  const result = await mammoth.extractRawText({ buffer });
-  return result.value;
-}
-
-export async function parseResume(filePath: string, fileName: string): Promise<ResumeParsed> {
-  const rawText = await extractText(filePath, fileName);
-  fs.unlink(filePath, () => {});
+export async function parseResume(buffer: Buffer, fileName: string): Promise<ResumeParsed> {
+  const rawText = fileName.toLowerCase().endsWith('.pdf')
+    ? (await pdf(buffer)).text
+    : (await mammoth.extractRawText({ buffer })).value;
 
   const cacheKey = `parse:${crypto.createHash('md5').update(rawText.slice(0, 2000)).digest('hex')}`;
   const cached = await cacheGet<ResumeParsed>(cacheKey);

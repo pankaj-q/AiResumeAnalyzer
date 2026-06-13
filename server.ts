@@ -57,9 +57,8 @@ const apiLimiter = rateLimit({
 
 app.use(globalLimiter);
 
-// ── File upload ────────────────────────────────────────────────
+// ── File upload (memory storage — no disk writes) ──────────────
 const upload = multer({
-  dest: 'uploads/',
   limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter: (_req: Express.Request, file: Express.Multer.File, cb: FileFilterCallback) => {
     const ext = path.extname(file.originalname).toLowerCase();
@@ -83,7 +82,7 @@ app.post('/api/analyze', apiLimiter, upload.single('resume'), async (req: Reques
       return;
     }
 
-    const parsed = await parseResume(req.file.path, req.file.originalname);
+    const parsed = await parseResume(req.file.buffer, req.file.originalname);
     const result = await calculateATSScore(parsed, req.body.jobDescription);
 
     logger.info(`Analysis complete — ATS: ${result.atsScore} — file: ${req.file.originalname}`);
@@ -101,18 +100,22 @@ app.use((err: OpenAIError, _req: Request, res: Response, _next: NextFunction) =>
   res.status(err.status || 500).json({ error: isProd ? 'Internal server error' : err.message });
 });
 
-// ── Start ──────────────────────────────────────────────────────
-const server = app.listen(PORT, () => logger.info(`Server running on port ${PORT} [${isProd ? 'prod' : 'dev'}]`));
+// ── Start (skip in Vercel serverless) ───────────────────────────
+if (!process.env.VERCEL) {
+  const server = app.listen(PORT, () => logger.info(`Server running on port ${PORT} [${isProd ? 'prod' : 'dev'}]`));
 
-function shutdown(signal: string) {
-  logger.info(`${signal} received — shutting down gracefully`);
-  server.close(() => {
-    redisClient?.quit();
-    logger.info('Server closed');
-    process.exit(0);
-  });
-  setTimeout(() => process.exit(1), 10_000).unref();
+  function shutdown(signal: string) {
+    logger.info(`${signal} received — shutting down gracefully`);
+    server.close(() => {
+      redisClient?.quit();
+      logger.info('Server closed');
+      process.exit(0);
+    });
+    setTimeout(() => process.exit(1), 10_000).unref();
+  }
+
+  process.on('SIGTERM', () => shutdown('SIGTERM'));
+  process.on('SIGINT', () => shutdown('SIGINT'));
 }
 
-process.on('SIGTERM', () => shutdown('SIGTERM'));
-process.on('SIGINT', () => shutdown('SIGINT'));
+export default app;

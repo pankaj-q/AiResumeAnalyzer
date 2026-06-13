@@ -22,7 +22,7 @@ COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/client/dist ./client/dist
 COPY --chown=appuser:appgroup package.json ./
 
-RUN mkdir -p uploads logs && chown appuser:appgroup uploads logs
+RUN mkdir -p logs && chown appuser:appgroup logs
 
 USER appuser
 EXPOSE 3000

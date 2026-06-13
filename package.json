@@ -5,7 +5,8 @@
   "main": "dist/server.js",
   "type": "module",
   "scripts": {
-    "start": "npm run build:backend && npm run build:client && node dist/server.js",
+    "start": "node dist/server.js",
+    "build": "npm run build:backend && npm run build:client",
     "dev": "tsx watch server.ts",
     "dev:client": "npm --prefix client run dev",
     "build:backend": "tsc",
@@ -22,7 +23,7 @@
     "helmet": "^8.0.0",
     "ioredis": "^5.5.0",
     "mammoth": "^1.9.0",
-    "multer": "^1.4.5-lts.2",
+    "multer": "^2.1.1",
     "openai": "^4.86.2",
     "pdf-parse": "^1.1.1",
     "rate-limit-redis": "^4.2.0",
