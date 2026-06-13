@@ -10,7 +10,7 @@
     "dev": "tsx watch server.ts",
     "dev:client": "npm --prefix client run dev",
     "build:backend": "tsc",
-    "build:client": "npm --prefix client run build",
+    "build:client": "vite build client/",
     "docker:start": "docker compose up --build",
     "docker:stop": "docker compose down"
   },
@@ -27,7 +27,8 @@
     "openai": "^4.86.2",
     "pdf-parse": "^1.1.1",
     "rate-limit-redis": "^4.2.0",
-    "winston": "^3.17.0"
+    "winston": "^3.17.0",
+    "vite": "^8.0.16"
   },
   "devDependencies": {
     "@types/compression": "^1.8.1",
@@ -36,7 +37,6 @@
     "@types/multer": "^2.1.0",
     "@types/node": "^25.9.3",
     "tsx": "^4.22.4",
-    "typescript": "^6.0.3",
-    "vite": "^8.0.16"
+    "typescript": "^6.0.3"
   }
 }

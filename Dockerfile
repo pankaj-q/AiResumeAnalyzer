@@ -5,10 +5,10 @@ WORKDIR /app
 COPY package*.json ./
 COPY client/package*.json ./client/
 
-RUN npm ci && npm --prefix client ci
+RUN npm ci
 COPY . .
 
-RUN npm run build:backend && npm run build:client && npm prune --omit=dev && rm -rf client/node_modules
+RUN npm run build:backend && npm run build:client && npm prune --omit=dev
 
 # ── Production stage ───────────────────────────────────────────
 FROM node:22-alpine
