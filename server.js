@@ -79,7 +79,7 @@ app.post('/api/analyze', apiLimiter, upload.single('resume'), async (req, res) =
     res.json(result);
   } catch (err) {
     logger.error('Analysis failed', err);
-    res.status(500).json({ error: err.message || 'Analysis failed' });
+    res.status(err.statusCode || 500).json({ error: err.message || 'Analysis failed' });
   }
 });
 

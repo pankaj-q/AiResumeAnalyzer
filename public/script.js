@@ -79,6 +79,11 @@ form.addEventListener('submit', async (e) => {
       return;
     }
 
+    if (res.status === 502) {
+      showError(data.error || 'AI service unavailable. Check your API key and billing.');
+      return;
+    }
+
     if (!res.ok) throw new Error(data.error);
     displayResults(data);
   } catch (err) {

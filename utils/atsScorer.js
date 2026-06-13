@@ -1,9 +1,7 @@
 import crypto from 'crypto';
-import OpenAI from 'openai';
+import { openai, safeAICompletion } from './openai.js';
 import { cacheGet, cacheSet } from './redis.js';
 import logger from './logger.js';
-
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 export async function calculateATSScore(resume, jobDescription) {
   const hashInput = JSON.stringify({ text: resume.rawText?.slice(0, 2000), jd: jobDescription.slice(0, 2000) });
@@ -15,7 +13,7 @@ export async function calculateATSScore(resume, jobDescription) {
     return cached;
   }
 
-  const completion = await openai.chat.completions.create({
+  const completion = await safeAICompletion({
     model: 'gpt-4o-mini',
     messages: [
       {
